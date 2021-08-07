@@ -26,7 +26,7 @@ char m_from[300];
 char m_to[300];
 char m_sub[300];
 char m_msg[1000];
-char m_path[1000];
+char *m_path;
 char m_user[300];
 char m_passwd[300];
 char m_host[500];
@@ -71,6 +71,14 @@ int getIP(char *ptr)
   pclose(fp);
   return 0;
 }
+void usage()
+{
+
+printf("\n Usage \n");
+printf("=================================================================\n");
+printf("wsmpt -f [email_from] -t [email_to] -s [subject] -m [body of the mail] \n -a [path of file to be attached] -d [smtp domain address like smtp.gmail.com] -i [port number by default 465] \n -u [username] -p [password to login]\n");
+
+}
 int main(int argc, char **argv)
 {
 
@@ -82,65 +90,79 @@ int main(int argc, char **argv)
   struct mail_args args;
   int option;
 
-   while((option = getopt(argc, argv, ":f:t:s:m:u:p:a:h:i:")) != -1){ //get option from the getopt() method
+if(argc<8){
+
+printf("\nMore arguments required!");
+usage();
+return 0;
+}
+   while((option = getopt(argc, argv, ":f:t:s:m:u:p:a:d:i:?:")) != -1){ //get option from the getopt() method
       switch(option){
          //For option i, r, l, print that these are options
 
 
          case 'r':
-            printf("Given Option: %c\n", option);
+         //   printf("Given Option: %c\n", option);
             break;
          case 'f': //here f is used for some file name
 
             strcpy(args.m_from,optarg);
-            printf("Email from:%s\n", args.m_from);
+           // printf("Email from:%s\n", args.m_from);
             break;
         case 't':
             strcpy(args.m_to,optarg);
-            printf("To address:%s",args.m_to);
+            //printf("To address:%s",args.m_to);
             break;
           case 's':
             strcpy(args.m_sub,optarg);
-            printf("\nSubject:%s",args.m_sub);
+            //printf("\nSubject:%s",args.m_sub);
             break;
              case 'm':
              strcpy(args.m_msg,optarg);
-            printf("\nMessage body:%s",args.m_msg);
+            //printf("\nMessage body:%s",args.m_msg);
             break;
          case 'u':
 
             strcpy(args.m_user,optarg);
-            printf("\nUsername:%s",args.m_user);
+           // printf("\nUsername:%s",args.m_user);
             break;
         case 'p':
         strcpy(args.m_passwd,optarg);
-        printf("\nPassword:%s",args.m_passwd);
+        //printf("\nPassword:%s",args.m_passwd);
         break;
 
         case 'a':
-            strcpy(args.m_path,optarg);
-            printf("\nattcah:%s",optarg);
+            args.m_path=strdup(optarg);
+
+          //  printf("\nattcah:%s",optarg);
             break;
-        case 'h':
+        case 'd':
             strcpy(args.m_host,optarg);
-            printf("\nhost address:%s",args.m_host);
+            //printf("\ndomain address:%s",args.m_host);
             break;
+case 'h':
+usage();
+return 0;
+break;
         case 'i':
         strcpy(args.m_port,optarg);
-             printf("\nhost port:%s",args.m_port);
+             //printf("\nhost port:%s",args.m_port);
           break;
 
          case ':':
             printf("option needs a value\n");
+            return 0;
             break;
          case '?': //used for some unknown options
             printf("unknown option: %c\n", optopt);
+            return 0;
             break;
       }
    }
+
    //return -1;
 
-  sleep(6);
+ // sleep(6);
   //getIP(ip);
   //getMachine(md);
   //printf("%s",ip);
